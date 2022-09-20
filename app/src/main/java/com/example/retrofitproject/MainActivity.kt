@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         initTodoAPI()
     }
 
-    fun initTodoAPI(){
+    fun initTodoAPI() {
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
         //call API
@@ -28,11 +28,12 @@ class MainActivity : AppCompatActivity() {
 
         //Observer
         homeViewModel.todoLiveData.observe(this, Observer {
-        initAdapter(it)
+            initAdapter(it)
         })
     }
-    private fun initAdapter(data : List<Todos>){
-        val rvTodo:RecyclerView
+
+    private fun initAdapter(data: List<Todos>) {
+        val rvTodo: RecyclerView
         rvTodo = findViewById(R.id.rvTodo)
 
         rvTodo.layoutManager = LinearLayoutManager(this)
