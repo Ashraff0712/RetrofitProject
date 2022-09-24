@@ -1,5 +1,3 @@
-package com.example.retrofitproject.viewmodel
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,12 +5,21 @@ import com.example.retrofitproject.Repository.HomeActivityRepository
 import com.example.retrofitproject.model.Todos
 
 
-class HomeViewModel:ViewModel() {
+class HomeViewModel: ViewModel() {
 
-    var todoLiveData = MutableLiveData<List<Todos>>()
+    var todoLiveData: MutableLiveData<List<Todos>>? = null
+    var homeActivityRepository:HomeActivityRepository? = null
 
-    fun getApiData():LiveData<List<Todos>>{
-        todoLiveData = HomeActivityRepository.getServicesApiCall()
-        return todoLiveData
+    fun setHomeRepository(homeActivityRepository: HomeActivityRepository){
+        this.homeActivityRepository = homeActivityRepository
+    }
+
+    fun getServicesAPICall(): LiveData<List<Todos>>{
+        todoLiveData = homeActivityRepository?.getServicesApiCall()
+        return todoLiveData as MutableLiveData<List<Todos>>
+    }
+
+    fun getFailure(): LiveData<String>?{
+        return homeActivityRepository?.failureData
     }
 }

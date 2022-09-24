@@ -1,39 +1,30 @@
-package com.example.retrofitproject.network
+package com.deloitte.retrofitdemo.retrofit
 
+import com.example.retrofitproject.network.ApiInterface
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.security.KeyManagementException
-import java.security.NoSuchAlgorithmException
-import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    val BASE_URL = "https://jsonplaceholder.typicode.com"
-    private var mClient: OkHttpClient? = null
+    const val BASE_URL = "https://jsonplaceholder.typicode.com"
 
-    val client: OkHttpClient
-        @Throws(NoSuchAlgorithmException::class, KeyManagementException::class)
-        get() {
-            if (mClient == null) {
-                val interceptor = HttpLoggingInterceptor()
-                interceptor.level = HttpLoggingInterceptor.Level.BODY
+    val retrofitClient: Retrofit.Builder by lazy {
 
-                val httpBuilder = OkHttpClient.Builder()
-                httpBuilder
-                    .connectTimeout(15, TimeUnit.SECONDS)
-                    .readTimeout(20, TimeUnit.SECONDS)
-                    .addInterceptor(interceptor)  /// show all JSON in logCat
-                mClient = httpBuilder.build()
+        val logging = HttpLoggingInterceptor()
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
 
-            }
-            return mClient!!
-        }
-    fun getRetrofitInstance(): Retrofit {
-        return Retrofit.Builder()
+        val okHttpClient = OkHttpClient.Builder()
+        okHttpClient.addInterceptor(logging)
+
+        Retrofit.Builder()
             .baseUrl(BASE_URL)
+            .client(okHttpClient.build())
             .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
-            .build()
     }
+
+    val apiInterface: ApiInterface by lazy {
+        retrofitClient.build().create(ApiInterface::class.java)
+    }
+
 }
